@@ -264,9 +264,7 @@ const categories = [
                     {project.category}
                   </p>
 
-                  <h3 className="text-lg font-bold text-[#0D1927]">
-                    {project.title}
-                  </h3>
+        
 
                   <div className="mt-4 flex items-center justify-between">
                     <span className="text-sm text-gray-400">عرض التفاصيل</span>

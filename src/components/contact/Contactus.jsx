@@ -1,14 +1,19 @@
 import React, { useState } from "react";
+import emailjs from "@emailjs/browser";
+
 import {
   FiArrowLeft,
   FiCheckCircle,
-  FiClock,
   FiMail,
   FiMapPin,
   FiPhone,
   FiSend,
   FiUser,
 } from "react-icons/fi";
+
+const SERVICE_ID = "service_263mspt";
+const TEMPLATE_ID = "template_s01hgba";
+const PUBLIC_KEY = "aJTEAmM_vCrvGIz45";
 
 export default function Contactus() {
   const [formData, setFormData] = useState({
@@ -18,6 +23,10 @@ export default function Contactus() {
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -25,12 +34,65 @@ export default function Contactus() {
       ...prev,
       [name]: value,
     }));
+
+    setSuccess("");
+    setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Contact Form:", formData);
+    if (
+      !formData.name.trim() ||
+      !formData.phone.trim() ||
+      !formData.message.trim()
+    ) {
+      setError("من فضلك املأ الاسم ورقم الهاتف وتفاصيل المشروع.");
+      return;
+    }
+
+    setLoading(true);
+    setSuccess("");
+    setError("");
+
+    const templateParams = {
+      from_name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      message: formData.message.trim(),
+    };
+
+    console.log("EMAIL DATA =>", templateParams);
+
+    try {
+      const response = await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        templateParams,
+        {
+          publicKey: PUBLIC_KEY,
+        },
+      );
+
+      console.log("EMAILJS SUCCESS =>", response);
+
+      setSuccess(
+        "تم إرسال طلبك بنجاح، وسيتواصل معك فريق Golden Coast في أقرب وقت.",
+      );
+
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error("EMAILJS ERROR =>", err);
+
+      setError("حدث خطأ أثناء إرسال الطلب، برجاء المحاولة مرة أخرى.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const contactInfo = [
@@ -38,27 +100,21 @@ export default function Contactus() {
       id: 1,
       icon: FiPhone,
       title: "اتصل بنا",
-      value: "+20 100 000 0000",
-      href: "tel:+201000000000",
+      value: "+20 100 9498294",
+      href: "tel:+201009498294",
     },
     {
       id: 2,
       icon: FiMail,
       title: "البريد الإلكتروني",
-      value: "info@goldencoast.com",
-      href: "mailto:info@goldencoast.com",
+      value: "goldencoast40@gmail.com",
+      href: "mailto:goldencoast40@gmail.com",
     },
     {
       id: 3,
       icon: FiMapPin,
       title: "موقعنا",
       value: "القاهرة، مصر",
-    },
-    {
-      id: 4,
-      icon: FiClock,
-      title: "مواعيد العمل",
-      value: "السبت - الخميس | 9 ص - 6 م",
     },
   ];
 
@@ -67,14 +123,13 @@ export default function Contactus() {
       dir="rtl"
       className="relative overflow-hidden bg-[#F9F7F3] py-20 lg:py-28"
     >
-      {/* Background decorations */}
+      {/* Background */}
       <div className="pointer-events-none absolute -right-40 top-0 h-[450px] w-[450px] rounded-full bg-[#B37202]/5 blur-[100px]" />
 
       <div className="pointer-events-none absolute -bottom-40 -left-40 h-[450px] w-[450px] rounded-full bg-[#B37202]/5 blur-[100px]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* ================= HEADER ================= */}
-
+        {/* Header */}
         <div className="mx-auto mb-14 max-w-3xl text-center">
           <div className="mb-5 flex items-center justify-center gap-3">
             <span className="h-[2px] w-9 bg-[#B37202]" />
@@ -97,14 +152,11 @@ export default function Contactus() {
           </p>
         </div>
 
-        {/* ================= MAIN CARD ================= */}
-
+        {/* Main */}
         <div className="overflow-hidden rounded-[32px] bg-white shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
           <div className="grid lg:grid-cols-[0.85fr_1.15fr]">
-            {/* ================= CONTACT INFO ================= */}
-
+            {/* Contact info */}
             <div className="relative overflow-hidden bg-[#101C2C] p-7 text-white sm:p-10 lg:p-12">
-              {/* Decoration */}
               <div className="pointer-events-none absolute -right-24 -top-24 h-[300px] w-[300px] rounded-full border border-[#B37202]/20" />
 
               <div className="pointer-events-none absolute -right-10 -top-10 h-[180px] w-[180px] rounded-full border border-[#B37202]/20" />
@@ -127,7 +179,6 @@ export default function Contactus() {
                   </p>
                 </div>
 
-                {/* Contact items */}
                 <div className="space-y-4">
                   {contactInfo.map((item) => {
                     const Icon = item.icon;
@@ -163,7 +214,6 @@ export default function Contactus() {
                   })}
                 </div>
 
-                {/* Bottom quote */}
                 <div className="mt-10 border-r-2 border-[#B37202] pr-4">
                   <p className="text-sm leading-7 text-white/50">
                     التفاصيل الجيدة تصنع فرقًا كبيرًا، ونحن هنا لنساعدك في كل
@@ -173,8 +223,7 @@ export default function Contactus() {
               </div>
             </div>
 
-            {/* ================= FORM ================= */}
-
+            {/* Form */}
             <div className="p-7 sm:p-10 lg:p-12">
               <div className="mb-8">
                 <div className="mb-3 flex items-center gap-3">
@@ -199,7 +248,7 @@ export default function Contactus() {
                 <div className="grid gap-5 md:grid-cols-2">
                   <div>
                     <label className="mb-2 block text-sm font-semibold text-[#101C2C]">
-                      الاسم
+                      الاسم *
                     </label>
 
                     <div className="group relative">
@@ -211,33 +260,15 @@ export default function Contactus() {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="اكتب اسمك"
-                        className="
-                          h-14
-                          w-full
-                          rounded-xl
-                          border
-                          border-gray-200
-                          bg-[#FAFAF9]
-                          pr-12
-                          pl-4
-                          text-sm
-                          text-[#101C2C]
-                          outline-none
-                          transition-all
-                          duration-300
-                          placeholder:text-gray-400
-                          focus:border-[#B37202]
-                          focus:bg-white
-                          focus:ring-4
-                          focus:ring-[#B37202]/5
-                        "
+                        required
+                        className="h-14 w-full rounded-xl border border-gray-200 bg-[#FAFAF9] pr-12 pl-4 text-sm text-[#101C2C] outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#B37202] focus:bg-white focus:ring-4 focus:ring-[#B37202]/5"
                       />
                     </div>
                   </div>
 
                   <div>
                     <label className="mb-2 block text-sm font-semibold text-[#101C2C]">
-                      رقم الهاتف
+                      رقم الهاتف *
                     </label>
 
                     <div className="group relative">
@@ -250,26 +281,8 @@ export default function Contactus() {
                         onChange={handleChange}
                         placeholder="01xxxxxxxxx"
                         dir="rtl"
-                        className="
-                          h-14
-                          w-full
-                          rounded-xl
-                          border
-                          border-gray-200
-                          bg-[#FAFAF9]
-                          pr-12
-                          pl-4
-                          text-sm
-                          text-[#101C2C]
-                          outline-none
-                          transition-all
-                          duration-300
-                          placeholder:text-gray-400
-                          focus:border-[#B37202]
-                          focus:bg-white
-                          focus:ring-4
-                          focus:ring-[#B37202]/5
-                        "
+                        required
+                        className="h-14 w-full rounded-xl border border-gray-200 bg-[#FAFAF9] pr-12 pl-4 text-sm text-[#101C2C] outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#B37202] focus:bg-white focus:ring-4 focus:ring-[#B37202]/5"
                       />
                     </div>
                   </div>
@@ -290,26 +303,7 @@ export default function Contactus() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="example@email.com"
-                      className="
-                        h-14
-                        w-full
-                        rounded-xl
-                        border
-                        border-gray-200
-                        bg-[#FAFAF9]
-                        pr-12
-                        pl-4
-                        text-sm
-                        text-[#101C2C]
-                        outline-none
-                        transition-all
-                        duration-300
-                        placeholder:text-gray-400
-                        focus:border-[#B37202]
-                        focus:bg-white
-                        focus:ring-4
-                        focus:ring-[#B37202]/5
-                      "
+                      className="h-14 w-full rounded-xl border border-gray-200 bg-[#FAFAF9] pr-12 pl-4 text-sm text-[#101C2C] outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#B37202] focus:bg-white focus:ring-4 focus:ring-[#B37202]/5"
                     />
                   </div>
                 </div>
@@ -317,7 +311,7 @@ export default function Contactus() {
                 {/* Message */}
                 <div>
                   <label className="mb-2 block text-sm font-semibold text-[#101C2C]">
-                    تفاصيل المشروع
+                    تفاصيل المشروع *
                   </label>
 
                   <textarea
@@ -326,30 +320,26 @@ export default function Contactus() {
                     onChange={handleChange}
                     placeholder="حدثنا عن المشروع أو الخدمة التي تحتاجها..."
                     rows="5"
-                    className="
-                      w-full
-                      resize-none
-                      rounded-xl
-                      border
-                      border-gray-200
-                      bg-[#FAFAF9]
-                      p-4
-                      text-sm
-                      leading-7
-                      text-[#101C2C]
-                      outline-none
-                      transition-all
-                      duration-300
-                      placeholder:text-gray-400
-                      focus:border-[#B37202]
-                      focus:bg-white
-                      focus:ring-4
-                      focus:ring-[#B37202]/5
-                    "
+                    required
+                    className="w-full resize-none rounded-xl border border-gray-200 bg-[#FAFAF9] p-4 text-sm leading-7 text-[#101C2C] outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#B37202] focus:bg-white focus:ring-4 focus:ring-[#B37202]/5"
                   />
                 </div>
 
-                {/* Footer of form */}
+                {/* Success */}
+                {success && (
+                  <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
+                    ✅ {success}
+                  </div>
+                )}
+
+                {/* Error */}
+                {error && (
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                    ❌ {error}
+                  </div>
+                )}
+
+                {/* Footer */}
                 <div className="flex flex-col gap-5 pt-2 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <FiCheckCircle className="text-[#B37202]" />
@@ -359,30 +349,17 @@ export default function Contactus() {
 
                   <button
                     type="submit"
-                    className="
-                      group
-                      inline-flex
-                      min-w-[170px]
-                      items-center
-                      justify-center
-                      gap-3
-                      rounded-xl
-                      bg-[#B37202]
-                      px-7
-                      py-4
-                      text-sm
-                      font-bold
-                      text-white
-                      shadow-[0_12px_30px_rgba(179,114,2,0.2)]
-                      transition-all
-                      duration-300
-                      hover:-translate-y-1
-                      hover:bg-[#925c00]
-                      hover:shadow-[0_18px_35px_rgba(179,114,2,0.25)]
-                    "
+                    disabled={loading}
+                    className="group inline-flex min-w-[170px] items-center justify-center gap-3 rounded-xl bg-[#B37202] px-7 py-4 text-sm font-bold text-white shadow-[0_12px_30px_rgba(179,114,2,0.2)] transition-all duration-300 hover:-translate-y-1 hover:bg-[#925c00] hover:shadow-[0_18px_35px_rgba(179,114,2,0.25)] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
                   >
-                    إرسال الطلب
-                    <FiSend className="transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1" />
+                    {loading ? (
+                      "جاري الإرسال..."
+                    ) : (
+                      <>
+                        إرسال الطلب
+                        <FiSend className="transition-transform duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1" />
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
@@ -390,8 +367,7 @@ export default function Contactus() {
           </div>
         </div>
 
-        {/* ================= BOTTOM CTA ================= */}
-
+        {/* Bottom CTA */}
         <div className="mt-8 flex flex-col items-center justify-between gap-5 rounded-[22px] border border-[#B37202]/10 bg-[#B37202]/[0.04] px-6 py-5 sm:flex-row">
           <div>
             <p className="mb-1 font-bold text-[#101C2C]">
@@ -404,7 +380,7 @@ export default function Contactus() {
           </div>
 
           <a
-            href="tel:+201000000000"
+            href="tel:+201009498294"
             className="group inline-flex items-center gap-3 text-sm font-bold text-[#B37202]"
           >
             تحدث معنا الآن
