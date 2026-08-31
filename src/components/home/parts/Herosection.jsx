@@ -73,44 +73,36 @@ export default function HeroSection() {
         </p>
 
         {/* Buttons */}
-        <div
-          className="
-            flex
-            flex-col
-            items-center
-            justify-center
-            gap-4
-            sm:flex-row
-          "
-        >
+        {/* Buttons */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full max-w-[380px] mx-auto">
           {/* Primary Button */}
           <button
             type="button"
             className="
-              inline-flex
-              w-fit
-              min-w-[160px]
-              items-center
-              justify-center
-              rounded
-              border-2
-              border-[#B37202]
-              bg-[#B37202]
-              px-7
-              py-3
-              text-sm
-              font-semibold
-              text-white
-              transition-all
-              duration-300
-              hover:bg-transparent
-              hover:text-[#B37202]
-              sm:text-base
-            "
+      inline-flex
+      w-full
+      items-center
+      justify-center
+      rounded
+      border-2
+      border-[#B37202]
+      bg-[#B37202]
+      px-3
+      py-3
+      text-xs
+      font-semibold
+      text-white
+      transition-all
+      duration-300
+      hover:bg-transparent
+      hover:text-[#B37202]
+      sm:px-7
+      sm:text-base
+    "
           >
             ابدأ الآن
             <svg
-              className="me-2 h-4 w-4 rotate-180"
+              className="me-2 h-4 w-4 rotate-180 shrink-0"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -131,23 +123,23 @@ export default function HeroSection() {
           <button
             type="button"
             className="
-              w-fit
-              min-w-[160px]
-              rounded
-              border-2
-              border-[#B37202]
-              bg-transparent
-              px-7
-              py-3
-              text-sm
-              font-semibold
-              text-white
-              transition-all
-              duration-300
-              hover:bg-[#B37202]
-              hover:text-white
-              sm:text-base
-            "
+      w-full
+      rounded
+      border-2
+      border-[#B37202]
+      bg-transparent
+      px-3
+      py-3
+      text-xs
+      font-semibold
+      text-white
+      transition-all
+      duration-300
+      hover:bg-[#B37202]
+      hover:text-white
+      sm:px-7
+      sm:text-base
+    "
           >
             اعرف المزيد
           </button>
